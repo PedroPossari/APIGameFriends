@@ -1,0 +1,18 @@
+package Game.friends.GameFriends.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+
+@Data
+public class LoginDTO {
+
+    @Schema(example = "usuario123", description = "Login do usuário")
+    @NotBlank(message = "Login é obrigatório")
+    private String login;
+
+    @Schema(example = "senhaSegura123", description = "Senha do usuário")
+    @NotBlank(message = "Senha é obrigatória")
+    private String senha;
+}

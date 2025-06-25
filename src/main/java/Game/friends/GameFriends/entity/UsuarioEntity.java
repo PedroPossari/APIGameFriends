@@ -25,6 +25,9 @@ public class UsuarioEntity implements UserDetails
     @Column(name = "LOGIN")
     private String login;
 
+    @Column(name = "EMAIL", nullable = false, unique = true)
+    private String email;
+
     @Column(name = "SENHA")
     private String senha;
     @JsonIgnore
@@ -35,7 +38,6 @@ public class UsuarioEntity implements UserDetails
             inverseJoinColumns = @JoinColumn(name = "ID_CARGO")
     )
     private Set<CargoEntity> cargos;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()

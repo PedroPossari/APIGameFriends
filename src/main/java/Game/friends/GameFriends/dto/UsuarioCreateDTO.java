@@ -12,6 +12,10 @@ public class UsuarioCreateDTO {
     @NotBlank(message = "Login é obrigatório")
     private String login;
 
+    @Schema(example = "pedro@email.com", description = "Email do usuário")
+    @NotBlank(message = "Email é obrigatório")
+    private String email;
+
     @Schema(example = "123456", description = "Senha do usuário")
     @NotBlank(message = "Senha é obrigatória")
     private String senha;

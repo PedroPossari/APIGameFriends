@@ -52,13 +52,16 @@ public class UsuarioService
         return objectMapper.convertValue(usuario, UsuarioDTO.class);
     }
 
-    public UsuarioDTO create(UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException
-    {
+    public UsuarioDTO create(UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
+        if (usuarioRepository.findByEmail(usuarioCreateDTO.getEmail()).isPresent()) {
+            throw new RegraDeNegocioException("Email já está em uso");
+        }
+
         UsuarioEntity entity = new UsuarioEntity();
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         entity.setLogin(usuarioCreateDTO.getLogin());
         entity.setSenha(encoder.encode(usuarioCreateDTO.getSenha()));
-
+        entity.setEmail(usuarioCreateDTO.getEmail());
 
         CargoEntity cargo = cargoRepository.findByNome(usuarioCreateDTO.getNomeCargo())
                 .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));

@@ -1,12 +1,13 @@
 package Game.friends.GameFriends.entity;
 
 import Game.friends.GameFriends.entity.UsuarioJogo.UsuarioJogoEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
@@ -17,25 +18,8 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@TypeDef(name = "string-array", typeClass = StringArrayType.class)
 public class JogoEntity {
-
-    /*
-        ⢀⡴⠑⡄⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-        ⠸⡇⠀⠿⡀⠀⠀⠀⣀⡴⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠑⢄⣠⠾⠁⣀⣄⡈⠙⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⢀⡀⠁⠀⠀⠈⠙⠛⠂⠈⣿⣿⣿⣿⣿⠿⡿⢿⣆⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⢀⡾⣁⣀⠀⠴⠂⠙⣗⡀⠀⢻⣿⣿⠭⢤⣴⣦⣤⣹⠀⠀⠀⢀⢴⣶⣆
-        ⠀⠀⢀⣾⣿⣿⣿⣷⣮⣽⣾⣿⣥⣴⣿⣿⡿⢂⠔⢚⡿⢿⣿⣦⣴⣾⠁⠸⣼⡿
-        ⠀⢀⡞⠁⠙⠻⠿⠟⠉⠀⠛⢹⣿⣿⣿⣿⣿⣌⢤⣼⣿⣾⣿⡟⠉⠀⠀⠀⠀⠀
-        ⠀⣾⣷⣶⠇⠀⠀⣤⣄⣀⡀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀
-        ⠀⠉⠈⠉⠀⠀⢦⡈⢻⣿⣿⣿⣶⣶⣶⣶⣤⣽⡹⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠉⠲⣽⡻⢿⣿⣿⣿⣿⣿⣿⣷⣜⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣷⣶⣮⣭⣽⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⣀⣀⣈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
-        ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠿⠿⠿⠿⠛⠉
-     */
     @Id
     @SequenceGenerator(name = "JOGOS_SEQ", sequenceName = "SEQ_JOGOS", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "JOGOS_SEQ")
@@ -54,12 +38,12 @@ public class JogoEntity {
     @Column(name = "TOTAL_RATING")
     private Integer totalRating;
 
-    @Column(name = "GENERO", columnDefinition = "varchar[]")
-    @Type(type = "org.hibernate.type.StringArrayType")
+    @Type(type = "string-array")
+    @Column(name = "GENERO", columnDefinition = "varchar(128)[]")
     private String[] genero;
 
-    @Column(name = "PLATAFORMAS", columnDefinition = "varchar[]")
-    @Type(type = "org.hibernate.type.StringArrayType")
+    @Type(type = "string-array")
+    @Column(name = "PLATAFORMAS", columnDefinition = "varchar(128)[]")
     private String[] plataformas;
 
     @Column(name = "PRODUTORA")
@@ -68,7 +52,6 @@ public class JogoEntity {
     @Column(name = "IMG")
     private String img;
 
-    @OneToMany(mappedBy = "JOGOS", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "jogos", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UsuarioJogoEntity> usuarioJogos;
-
 }

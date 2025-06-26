@@ -11,8 +11,8 @@ import java.io.Serializable;
 public class UsuarioJogoId implements Serializable {
 
     @Column(name = "ID_USUARIO")
-    private Long idUsuario;
+    private Integer idUsuario;
 
     @Column(name = "ID_JOGO")
-    private Long idJogo;
+    private Integer idJogo;
 }

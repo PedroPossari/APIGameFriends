@@ -20,14 +20,14 @@ public class UsuarioJogoEntity {
     private UsuarioJogoId id = new UsuarioJogoId();
 
     @ManyToOne
-    @MapsId("idUsuario")
+    @MapsId("ID_USUARIO")
     @JoinColumn(name = "ID_USUARIO")
-    private UsuarioEntity usuario;
+    private UsuarioEntity usuarios;
 
     @ManyToOne
-    @MapsId("idJogo")
+    @MapsId("ID_JOGO")
     @JoinColumn(name = "ID_JOGO")
-    private JogoEntity jogo;
+    private JogoEntity jogos;
 
     private Double rating;
 }

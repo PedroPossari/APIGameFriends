@@ -1,5 +1,6 @@
 package Game.friends.GameFriends.entity;
 
+import Game.friends.GameFriends.entity.UsuarioJogo.UsuarioJogoEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,6 +39,9 @@ public class UsuarioEntity implements UserDetails
             inverseJoinColumns = @JoinColumn(name = "ID_CARGO")
     )
     private Set<CargoEntity> cargos;
+
+    @OneToMany(mappedBy = "usuarios", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UsuarioJogoEntity> usuarioJogos;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()

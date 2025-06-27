@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 public class JogoCreateDTO {
     private String titulo;
 
-    private OffsetDateTime anoLancamento;
+    private Integer anoLancamento;
 
     private String[] genero;
 
@@ -21,4 +21,6 @@ public class JogoCreateDTO {
     private String produtora;
 
     private String img;
+
+    private String descricao;
 }

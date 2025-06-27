@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -104,6 +105,7 @@ public class JogoService {
         if (jogoEntity.getTotalRating() == null) jogoEntity.setTotalRating(1);
         else jogoEntity.setTotalRating(jogoEntity.getTotalRating() + 1);
 
+        if (jogoEntity.getAvgRating() == null) jogoEntity.setAvgRating(0.0);
         Double rates = (jogoEntity.getAvgRating() * jogoEntity.getTotalRating());
 
         jogoEntity.setAvgRating((rates + entity.getRating() )/ jogoEntity.getTotalRating());
@@ -142,5 +144,34 @@ public class JogoService {
         dto.setIdUsuario(userEntity.getIdUsuario());
 
         return dto;
+    }
+
+    public FavoriteDTO favoritar(FavoriteDTO favoriteDTO) throws RegraDeNegocioException {
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
+
+        JogoEntity jogoEntity = jogoRepository.findById(favoriteDTO.getIdJogo())
+                .orElseThrow(() -> new RegraDeNegocioException("Jogo não encontrado."));
+
+        UsuarioJogoEntity entity = usuarioJogoRepository.findByUsuarios_IdUsuarioAndJogos_IdJogo(loggedUser.getIdUsuario(), favoriteDTO.getIdJogo())
+                .orElseThrow(() -> new RegraDeNegocioException("Avaliação não encontrada"));
+
+        entity.setFavorito(favoriteDTO.getFavorito());
+
+        usuarioJogoRepository.save(entity);
+
+        return favoriteDTO;
+    }
+
+    public List<JogoDTO> findFavoritos() throws RegraDeNegocioException {
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
+
+        List<UsuarioJogoEntity> entities = usuarioJogoRepository.findByUsuarios_IdUsuario(loggedUser.getIdUsuario());
+
+        if (entities.isEmpty()) throw new RegraDeNegocioException("Usuário não possui jogos favoritos.");
+
+        List<JogoDTO> favoritos = entities.stream().filter(UsuarioJogoEntity::getFavorito).map(UsuarioJogoEntity::getJogos)
+                .map(jogo -> objectMapper.convertValue(jogo, JogoDTO.class)).toList();
+
+        return favoritos;
     }
 }

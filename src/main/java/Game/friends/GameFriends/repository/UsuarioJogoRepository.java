@@ -10,4 +10,6 @@ public interface UsuarioJogoRepository extends JpaRepository<UsuarioJogoEntity, 
     Optional<UsuarioJogoEntity> findByUsuarios_IdUsuarioAndJogos_IdJogo(Integer idUsuario, Integer idJogo);
 
     List<UsuarioJogoEntity> findByJogos_IdJogo(Integer idJogo);
+
+    List<UsuarioJogoEntity> findByUsuarios_IdUsuario(Integer idUsuario);
 }

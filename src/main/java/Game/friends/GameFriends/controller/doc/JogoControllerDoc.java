@@ -1,9 +1,6 @@
 package Game.friends.GameFriends.controller.doc;
 
-import Game.friends.GameFriends.dto.Jogos.JogoCreateDTO;
-import Game.friends.GameFriends.dto.Jogos.JogoDTO;
-import Game.friends.GameFriends.dto.Jogos.ReviewCreateDTO;
-import Game.friends.GameFriends.dto.Jogos.ReviewDTO;
+import Game.friends.GameFriends.dto.Jogos.*;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -92,4 +89,26 @@ public interface JogoControllerDoc {
     )
     @PutMapping("/review")
     public ResponseEntity<ReviewDTO> updateReview(@Valid @RequestBody ReviewCreateDTO reviewUpdateDTO) throws RegraDeNegocioException;
+
+    @Operation(summary = "Editar favorito", description = "Edita o favoritar de um jogo")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna os dados da review editada"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PutMapping("/favoritos")
+    public ResponseEntity<FavoriteDTO> favoritar(@Valid @RequestBody FavoriteDTO favoriteDTO) throws RegraDeNegocioException;
+
+    @Operation(summary = "Listar Jogos Favoritos", description = "Lista todos os Jogos favoritados pelo usuario")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna a lista de jogos"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/favoritos")
+    public ResponseEntity<List<JogoDTO>> findFavoritos() throws RegraDeNegocioException ;
 }

@@ -30,4 +30,6 @@ public class UsuarioJogoEntity {
     private JogoEntity jogos;
 
     private Double rating;
+
+    private Boolean favorito;
 }

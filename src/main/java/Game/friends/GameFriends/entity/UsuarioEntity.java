@@ -40,6 +40,7 @@ public class UsuarioEntity implements UserDetails
     )
     private Set<CargoEntity> cargos;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "usuarios", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UsuarioJogoEntity> usuarioJogos;
 

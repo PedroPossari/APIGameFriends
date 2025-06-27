@@ -1,6 +1,7 @@
 package Game.friends.GameFriends.entity;
 
 import Game.friends.GameFriends.entity.UsuarioJogo.UsuarioJogoEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,6 +53,7 @@ public class JogoEntity {
     @Column(name = "IMG")
     private String img;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "jogos", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UsuarioJogoEntity> usuarioJogos;
 }

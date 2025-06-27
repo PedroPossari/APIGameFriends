@@ -31,7 +31,7 @@ public class JogoEntity {
     private String titulo;
 
     @Column(name = "ANO_LANCAMENTO")
-    private OffsetDateTime anoLancamento;
+    private Integer anoLancamento;
 
     @Column(name = "AVG_RATING")
     private Double avgRating;
@@ -52,6 +52,9 @@ public class JogoEntity {
 
     @Column(name = "IMG")
     private String img;
+
+    @Column(name = "DESCRICAO")
+    private String descricao;
 
     @JsonIgnore
     @OneToMany(mappedBy = "jogos", cascade = CascadeType.ALL, orphanRemoval = true)

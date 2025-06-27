@@ -13,7 +13,7 @@ public class JogoDTO {
 
     private String titulo;
 
-    private OffsetDateTime anoLancamento;
+    private Integer anoLancamento;
 
     private Double avgRating;
 
@@ -24,6 +24,8 @@ public class JogoDTO {
     private String[] plataformas;
 
     private String produtora;
+
+    private String descricao;
 
     private String img;
 }

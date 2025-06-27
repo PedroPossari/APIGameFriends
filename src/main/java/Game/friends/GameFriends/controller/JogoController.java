@@ -1,10 +1,7 @@
 package Game.friends.GameFriends.controller;
 
 import Game.friends.GameFriends.controller.doc.JogoControllerDoc;
-import Game.friends.GameFriends.dto.Jogos.JogoCreateDTO;
-import Game.friends.GameFriends.dto.Jogos.JogoDTO;
-import Game.friends.GameFriends.dto.Jogos.ReviewCreateDTO;
-import Game.friends.GameFriends.dto.Jogos.ReviewDTO;
+import Game.friends.GameFriends.dto.Jogos.*;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;
 import Game.friends.GameFriends.service.JogoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,5 +62,15 @@ public class JogoController implements JogoControllerDoc {
             throws RegraDeNegocioException
     {
         return new ResponseEntity<>(jogoService.updateReview(reviewUpdateDTO), HttpStatus.OK);
+    }
+
+    @PutMapping("/favoritos")
+    public ResponseEntity<FavoriteDTO> favoritar(@Valid @RequestBody FavoriteDTO favoriteDTO) throws RegraDeNegocioException {
+        return new ResponseEntity<>(jogoService.favoritar(favoriteDTO), HttpStatus.OK);
+    }
+
+    @GetMapping("/favoritos")
+    public ResponseEntity<List<JogoDTO>> findFavoritos() throws RegraDeNegocioException {
+        return new ResponseEntity<>(jogoService.findFavoritos(), HttpStatus.OK);
     }
 }

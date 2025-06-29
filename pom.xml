@@ -96,6 +96,22 @@
 			<artifactId>hibernate-types-52</artifactId>
 			<version>2.21.1</version>
 		</dependency>
+
+		<!-- Verificador do ID Token do Google -->
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+
+		<!-- Necessário para o JacksonFactory funcionar -->
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client-jackson2</artifactId>
+			<version>1.43.3</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

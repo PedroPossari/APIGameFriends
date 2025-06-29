@@ -9,27 +9,28 @@ import Game.friends.GameFriends.entity.UsuarioEntity;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;
 import Game.friends.GameFriends.repository.CargoRepository;
 import Game.friends.GameFriends.repository.UsuarioRepository;
+import Game.friends.GameFriends.security.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import Game.friends.GameFriends.security.GoogleTokenVerifier;
 
 import java.util.Optional;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class UsuarioService
-{
+public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final CargoRepository cargoRepository;
     private final ObjectMapper objectMapper;
+    private final TokenService tokenService;
+    private final GoogleTokenVerifier googleTokenVerifier;
 
-
-    public Optional<UsuarioEntity> findbyLogin(String login)
-    {
+    public Optional<UsuarioEntity> findbyLogin(String login) {
         return usuarioRepository.findByLogin(login);
     }
 
@@ -72,8 +73,7 @@ public class UsuarioService
         return retornarDTO(entity);
     }
 
-    public void changePassword(UsuarioSenhaDTO dto) throws RegraDeNegocioException
-    {
+    public void changePassword(UsuarioSenhaDTO dto) throws RegraDeNegocioException {
         UsuarioEntity usuario = findByID(getIdLoggedUser());
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -86,8 +86,7 @@ public class UsuarioService
         usuarioRepository.save(usuario);
     }
 
-    public UsuarioDTO update(UsuarioUpdateDTO dto) throws RegraDeNegocioException
-    {
+    public UsuarioDTO update(UsuarioUpdateDTO dto) throws RegraDeNegocioException {
         UsuarioEntity usuario = findByID(getIdLoggedUser());
 
         usuario.setLogin(dto.getLogin());
@@ -96,11 +95,14 @@ public class UsuarioService
         return retornarDTO(updated);
     }
 
-    public void desativarConta() throws RegraDeNegocioException
-    {
+    public void desativarConta() throws RegraDeNegocioException {
         UsuarioEntity usuario = findByID(getIdLoggedUser());
-
         usuarioRepository.delete(usuario);
     }
-}
 
+    public Optional<UsuarioEntity> findByEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
+
+
+}

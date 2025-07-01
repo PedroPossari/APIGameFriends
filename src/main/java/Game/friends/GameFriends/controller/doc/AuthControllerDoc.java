@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Tag(name = "Autenticação", description = "Endpoints para autenticação e gerenciamento de usuários")
 @Validated
@@ -37,7 +39,7 @@ public interface AuthControllerDoc {
     })
     ResponseEntity<UsuarioDTO> register(
             @Parameter(description = "Dados para criação do usuário", required = true)
-            @Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException;
+            @Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException, MessagingException, IOException;
 
     @Operation(summary = "Alterar senha do usuário logado", description = "Atualiza a senha do usuário atualmente autenticado")
     @ApiResponses({

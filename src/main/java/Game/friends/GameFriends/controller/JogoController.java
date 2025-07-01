@@ -23,8 +23,10 @@ public class JogoController implements JogoControllerDoc {
     private final JogoService jogoService;
 
     @GetMapping()
-    public ResponseEntity<List<JogoDTO>> findAll(Integer page, Integer size, @RequestParam(required = false) String filter) {
-        return new ResponseEntity<>(jogoService.findAll(page,size,filter), HttpStatus.OK);
+    public ResponseEntity<List<JogoDTO>> findAll(Integer page, Integer size,
+                                                 @RequestParam(required = false) String filter,
+                                                 @RequestParam(required = false) String search) {
+        return new ResponseEntity<>(jogoService.findAll(page,size,filter,search), HttpStatus.OK);
     }
 
     @GetMapping("/{idJogo}")

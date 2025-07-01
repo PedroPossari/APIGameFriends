@@ -1,9 +1,9 @@
 package Game.friends.GameFriends.service;
 
-import Game.friends.GameFriends.dto.UsuarioCreateDTO;
-import Game.friends.GameFriends.dto.UsuarioDTO;
-import Game.friends.GameFriends.dto.UsuarioSenhaDTO;
-import Game.friends.GameFriends.dto.UsuarioUpdateDTO;
+import Game.friends.GameFriends.dto.Usuario.UsuarioCreateDTO;
+import Game.friends.GameFriends.dto.Usuario.UsuarioDTO;
+import Game.friends.GameFriends.dto.Usuario.UsuarioSenhaDTO;
+import Game.friends.GameFriends.dto.Usuario.UsuarioUpdateDTO;
 import Game.friends.GameFriends.entity.CargoEntity;
 import Game.friends.GameFriends.entity.UsuarioEntity;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;

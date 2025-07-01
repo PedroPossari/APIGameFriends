@@ -1,7 +1,7 @@
 package Game.friends.GameFriends.service;
 
 import Game.friends.GameFriends.dto.Jogos.*;
-import Game.friends.GameFriends.dto.UsuarioDTO;
+import Game.friends.GameFriends.dto.Usuario.UsuarioDTO;
 import Game.friends.GameFriends.entity.JogoEntity;
 import Game.friends.GameFriends.entity.UsuarioEntity;
 import Game.friends.GameFriends.entity.UsuarioJogo.UsuarioJogoEntity;
@@ -16,11 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service

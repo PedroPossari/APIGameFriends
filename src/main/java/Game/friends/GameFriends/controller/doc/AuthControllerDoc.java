@@ -1,6 +1,6 @@
 package Game.friends.GameFriends.controller.doc;
 
-import Game.friends.GameFriends.dto.*;
+import Game.friends.GameFriends.dto.Usuario.*;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

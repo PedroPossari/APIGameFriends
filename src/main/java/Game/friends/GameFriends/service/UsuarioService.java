@@ -20,6 +20,7 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +51,15 @@ public class UsuarioService {
     }
 
     private UsuarioDTO retornarDTO(UsuarioEntity usuario) {
-        return objectMapper.convertValue(usuario, UsuarioDTO.class);
+        UsuarioDTO dto = objectMapper.convertValue(usuario, UsuarioDTO.class);
+
+        Set<String> roles = usuario.getCargos()
+                .stream()
+                .map(cargo -> cargo.getNome())
+                .collect(Collectors.toSet());
+
+        dto.setRoles(roles);
+        return dto;
     }
 
     public UsuarioDTO create(UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException, IOException, MessagingException {

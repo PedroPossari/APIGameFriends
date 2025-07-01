@@ -12,7 +12,9 @@ import Game.friends.GameFriends.repository.UsuarioJogoRepository;
 import Game.friends.GameFriends.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -29,22 +31,28 @@ public class JogoService {
     private final ObjectMapper objectMapper;
     private final UsuarioService usuarioService;
 
-    public List<JogoDTO> findAll(Integer page, Integer size, String filter) {
+
+    public List<JogoDTO> findAll(Integer page, Integer size, String filter, String search) {
+        Page<JogoEntity> entities;
+        Pageable pageable;
 
         if (filter != null &&
-            (
-                filter.equalsIgnoreCase("anoLancamento") ||
-                filter.equalsIgnoreCase("titulo") ||
-                filter.equalsIgnoreCase("avgRating")
-            )
+                (
+                        filter.equalsIgnoreCase("anoLancamento") ||
+                                filter.equalsIgnoreCase("titulo") ||
+                                filter.equalsIgnoreCase("avgRating")
+                )
         ){
             Sort sorting = Sort.by(filter);
-            return jogoRepository.findAll(PageRequest.of(page,size,sorting)).stream()
-                    .map(jogo -> objectMapper.convertValue(jogo, JogoDTO.class)).collect(Collectors.toList());
+            pageable = PageRequest.of(page,size, sorting);
+        } else {
+            pageable = PageRequest.of(page,size);
         }
 
-        return jogoRepository.findAll(PageRequest.of(page,size)).stream()
-                .map(jogo -> objectMapper.convertValue(jogo, JogoDTO.class)).collect(Collectors.toList());
+        if (search != null && !search.isBlank()) entities = jogoRepository.findByTituloContainingIgnoreCase(search, pageable);
+        else entities = jogoRepository.findAll(pageable);
+
+        return entities.stream().map(entity -> objectMapper.convertValue(entity, JogoDTO.class)).collect(Collectors.toList());
     }
 
     public JogoDTO findById(Integer idJogo) {

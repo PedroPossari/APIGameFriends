@@ -21,7 +21,9 @@ public interface JogoControllerDoc {
             }
     )
     @GetMapping()
-    public ResponseEntity<List<JogoDTO>> findAll(Integer page, Integer size, @RequestParam(required = false) String filter);
+    public ResponseEntity<List<JogoDTO>> findAll(Integer page, Integer size,
+                                                 @RequestParam(required = false) String filter,
+                                                 @RequestParam(required = false) String search);
 
     @Operation(summary = "Jogo por ID", description = "Lista um jogo baseado no ID fornecido")
     @ApiResponses(

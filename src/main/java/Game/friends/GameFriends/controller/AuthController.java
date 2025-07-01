@@ -2,13 +2,10 @@ package Game.friends.GameFriends.controller;
 
 
 import Game.friends.GameFriends.controller.doc.AuthControllerDoc;
-import Game.friends.GameFriends.dto.*;
 import Game.friends.GameFriends.dto.Google.GoogleLoginDTO;
-import Game.friends.GameFriends.entity.CargoEntity;
+import Game.friends.GameFriends.dto.Usuario.*;
 import Game.friends.GameFriends.entity.UsuarioEntity;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;
-import Game.friends.GameFriends.repository.CargoRepository;
-import Game.friends.GameFriends.repository.UsuarioRepository;
 import Game.friends.GameFriends.security.GoogleTokenVerifier;
 import Game.friends.GameFriends.security.TokenService;
 import Game.friends.GameFriends.service.UsuarioService;

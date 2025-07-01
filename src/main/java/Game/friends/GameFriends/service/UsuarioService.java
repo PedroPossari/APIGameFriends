@@ -9,14 +9,15 @@ import Game.friends.GameFriends.entity.UsuarioEntity;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;
 import Game.friends.GameFriends.repository.CargoRepository;
 import Game.friends.GameFriends.repository.UsuarioRepository;
-import Game.friends.GameFriends.security.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import Game.friends.GameFriends.security.GoogleTokenVerifier;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -27,8 +28,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final CargoRepository cargoRepository;
     private final ObjectMapper objectMapper;
-    private final TokenService tokenService;
-    private final GoogleTokenVerifier googleTokenVerifier;
+    private final EmailService emailService;
 
     public Optional<UsuarioEntity> findbyLogin(String login) {
         return usuarioRepository.findByLogin(login);
@@ -53,7 +53,7 @@ public class UsuarioService {
         return objectMapper.convertValue(usuario, UsuarioDTO.class);
     }
 
-    public UsuarioDTO create(UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
+    public UsuarioDTO create(UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException, IOException, MessagingException {
         if (usuarioRepository.findByEmail(usuarioCreateDTO.getEmail()).isPresent()) {
             throw new RegraDeNegocioException("Email já está em uso");
         }
@@ -68,6 +68,10 @@ public class UsuarioService {
                 .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
 
         entity.setCargos(Set.of(cargo));
+
+        String newEmail = usuarioCreateDTO.getEmail();
+        String html = emailService.carregarTemplateHtml();
+        emailService.sendHtmlEmail(newEmail, "Conta Google cadastrada com sucesso!", html);
 
         usuarioRepository.save(entity);
         return retornarDTO(entity);
@@ -102,6 +106,33 @@ public class UsuarioService {
 
     public Optional<UsuarioEntity> findByEmail(String email) {
         return usuarioRepository.findByEmail(email);
+    }
+
+    public UsuarioEntity autenticarOuCadastrarUsuarioGoogle(GoogleIdToken.Payload payload) throws RegraDeNegocioException, IOException, MessagingException {
+        String email = payload.getEmail();
+        String nome = (String) payload.get("name");
+
+        Optional<UsuarioEntity> optionalUsuario = usuarioRepository.findByEmail(email);
+
+        if (optionalUsuario.isPresent()) {
+            return optionalUsuario.get();
+        }
+
+        UsuarioEntity usuario = new UsuarioEntity();
+        usuario.setEmail(email);
+        usuario.setLogin(email);
+        usuario.setSenha("");
+
+        CargoEntity cargo = cargoRepository.findByNomeIgnoreCase("ROLE_USUARIO")
+                .orElseThrow(() -> new RegraDeNegocioException("Cargo 'ROLE_USUARIO' não encontrado no sistema."));
+
+        usuario.setCargos(Set.of(cargo));
+
+        String newEmail = payload.getEmail();
+        String html = emailService.carregarTemplateHtml();
+        emailService.sendHtmlEmail(newEmail, "Conta Google cadastrada com sucesso!", html);
+
+        return usuarioRepository.save(usuario);
     }
 
 

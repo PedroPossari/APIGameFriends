@@ -23,12 +23,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-import java.util.Set;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -68,8 +68,7 @@ public class AuthController implements AuthControllerDoc
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UsuarioDTO> register(@RequestBody @Valid UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException
-    {
+    public ResponseEntity<UsuarioDTO> register(@RequestBody @Valid UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException, MessagingException, IOException {
         return ResponseEntity.ok(usuarioService.create(usuarioCreateDTO));
     }
 
@@ -93,9 +92,6 @@ public class AuthController implements AuthControllerDoc
         return ResponseEntity.ok("Usuário desativado.");
     }
 
-    private final UsuarioRepository usuarioRepository;
-    private final CargoRepository cargoRepository;
-
     @PostMapping("/google")
     public ResponseEntity<String> googleLogin(@RequestBody GoogleLoginDTO googleLoginDTO) {
         try {
@@ -105,32 +101,9 @@ public class AuthController implements AuthControllerDoc
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("ID Token inválido.");
             }
 
-            String email = payload.getEmail();
-            String nome = (String) payload.get("name");
-
-
-            Optional<UsuarioEntity> optionalUsuario = usuarioService.findByEmail(email);
-            UsuarioEntity usuario;
-
-            if (optionalUsuario.isPresent()) {
-                usuario = optionalUsuario.get();
-            } else {
-
-                usuario = new UsuarioEntity();
-                usuario.setEmail(email);
-                usuario.setLogin(email);
-                usuario.setSenha("");
-
-
-                CargoEntity cargo = cargoRepository.findByNome("USUARIO")
-                        .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
-
-                usuario.setCargos(Set.of(cargo));
-                usuario = usuarioRepository.save(usuario);
-            }
-
-
+            UsuarioEntity usuario = usuarioService.autenticarOuCadastrarUsuarioGoogle(payload);
             String token = tokenService.generateToken(usuario);
+
             return ResponseEntity.ok(token);
 
         } catch (Exception e) {

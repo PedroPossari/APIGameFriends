@@ -1,4 +1,4 @@
-package Game.friends.GameFriends.entity.Cargo;
+package Game.friends.GameFriends.entity.cargo;
 
 import Game.friends.GameFriends.entity.CargoEntity;
 import Game.friends.GameFriends.entity.UsuarioEntity;

@@ -33,10 +33,11 @@ public class SecurityConfiguration {
 
                         .antMatchers("/", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .antMatchers("/auth/**").permitAll()
-                        .antMatchers(HttpMethod.GET,"/jogos/**").hasAnyRole("ADMIN", "USUARIO")
-                        .antMatchers("/jogos/**").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.GET, "/jogos/**").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers("/jogos/review").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers("/jogos/favoritos").hasAnyRole("ADMIN", "USUARIO")
+                        .antMatchers("/jogos/**").hasRole("ADMIN")
+
 
                         .anyRequest().authenticated()
                 );

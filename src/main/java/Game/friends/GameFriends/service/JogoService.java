@@ -179,4 +179,19 @@ public class JogoService {
 
         return favoritos;
     }
+
+    public List<ReviewDTO> findReviewsByUsuario() throws RegraDeNegocioException {
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
+
+        List<UsuarioJogoEntity> lista = usuarioJogoRepository.findByUsuarios_IdUsuario(loggedUser.getIdUsuario());
+
+        return lista.stream().filter(u -> u.getRating() != null).map(u -> {
+            ReviewDTO dto = new ReviewDTO();
+            dto.setIdUsuario(loggedUser.getIdUsuario());
+            dto.setIdJogo(u.getJogos().getIdJogo());
+            dto.setRating(u.getRating());
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
 }

@@ -75,4 +75,9 @@ public class JogoController implements JogoControllerDoc {
     public ResponseEntity<List<JogoDTO>> findFavoritos() throws RegraDeNegocioException {
         return new ResponseEntity<>(jogoService.findFavoritos(), HttpStatus.OK);
     }
+
+    @GetMapping("/favoritos/{idJogo}")
+    public ResponseEntity<FavoriteDTO> isFavorito(@PathVariable("idJogo")Integer idJogo) throws RegraDeNegocioException {
+        return new ResponseEntity<>(jogoService.isFavorito(idJogo), HttpStatus.OK);
+    }
 }

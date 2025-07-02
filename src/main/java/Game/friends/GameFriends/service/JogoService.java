@@ -179,4 +179,13 @@ public class JogoService {
 
         return favoritos;
     }
+
+    public FavoriteDTO isFavorito(Integer idJogo) throws RegraDeNegocioException {
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
+        Optional<UsuarioJogoEntity> entity = usuarioJogoRepository.findByUsuarios_IdUsuarioAndJogos_IdJogo(loggedUser.getIdUsuario(), idJogo);
+
+        if (entity.isEmpty() || entity.get().getFavorito() == null) return new FavoriteDTO(idJogo, false);
+
+        return new FavoriteDTO(idJogo, entity.get().getFavorito());
+    }
 }

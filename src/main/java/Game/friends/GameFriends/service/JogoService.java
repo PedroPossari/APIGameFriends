@@ -151,6 +151,17 @@ public class JogoService {
         return dto;
     }
 
+    public ReviewCheckDTO isReviewed(Integer idJogo) throws RegraDeNegocioException {
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
+
+        JogoEntity jogoEntity = jogoRepository.findById(idJogo).orElseThrow(() -> new RegraDeNegocioException("Jogo não encontrado."));
+
+        Optional<UsuarioJogoEntity> entity = usuarioJogoRepository.findByUsuarios_IdUsuarioAndJogos_IdJogo(loggedUser.getIdUsuario(), idJogo);
+        if (entity.isEmpty()) return new ReviewCheckDTO(false);
+
+        return new ReviewCheckDTO(true);
+    }
+
     public FavoriteDTO favoritar(FavoriteDTO favoriteDTO) throws RegraDeNegocioException {
         UsuarioDTO loggedUser = usuarioService.getLoggedUser();
 

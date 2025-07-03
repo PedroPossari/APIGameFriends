@@ -113,4 +113,16 @@ public interface JogoControllerDoc {
     )
     @GetMapping("/favoritos")
     public ResponseEntity<List<JogoDTO>> findFavoritos() throws RegraDeNegocioException ;
+
+
+    @Operation(summary = "Verificar se jogo é favorito", description = "Retorna boolean para coluna favorito de jogo_x_usuario")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna boolean"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/favoritos/{idJogo}")
+    public ResponseEntity<FavoriteDTO> isFavorito(@PathVariable("idJogo")Integer idJogo) throws RegraDeNegocioException;
 }

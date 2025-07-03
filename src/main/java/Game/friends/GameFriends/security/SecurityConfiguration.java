@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,11 +34,12 @@ public class SecurityConfiguration {
 
                         .antMatchers("/", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .antMatchers("/auth/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/jogos/**").hasAnyRole("ADMIN", "USUARIO")
+                        .antMatchers(HttpMethod.GET,"/jogos/**").hasAnyRole("ADMIN", "USUARIO")
+                        .antMatchers(HttpMethod.PUT, "/jogos/favoritos").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers("/jogos/review").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers("/jogos/favoritos").hasAnyRole("ADMIN", "USUARIO")
+                        .antMatchers(HttpMethod.GET, "/jogos/favoritos/**").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers("/jogos/**").hasRole("ADMIN")
-
 
                         .anyRequest().authenticated()
                 );

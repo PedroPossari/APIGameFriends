@@ -5,6 +5,7 @@ import Game.friends.GameFriends.exception.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,6 +93,17 @@ public interface JogoControllerDoc {
     @PutMapping("/review")
     public ResponseEntity<ReviewDTO> updateReview(@Valid @RequestBody ReviewCreateDTO reviewUpdateDTO) throws RegraDeNegocioException;
 
+    @Operation(summary = "Verificar se jogo tem review", description = "Retorna boolean para jogo se ele tem review ou nao")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna boolean"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/review/{idJogo}")
+    public ResponseEntity<ReviewCheckDTO> isReviewed(@PathVariable("idJogo")Integer idJogo) throws RegraDeNegocioException;
+
     @Operation(summary = "Editar favorito", description = "Edita o favoritar de um jogo")
     @ApiResponses(
             value = {
@@ -115,14 +127,15 @@ public interface JogoControllerDoc {
     public ResponseEntity<List<JogoDTO>> findFavoritos() throws RegraDeNegocioException ;
 
 
-    @Operation(summary = "Verificar se jogo é favorito", description = "Retorna boolean para coluna favorito de jogo_x_usuario")
+    @Operation(summary = "Verificar se jogo é favorito", description = "Retorna DTO para coluna favorito de jogo_x_usuario")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna boolean"),
+                    @ApiResponse(responseCode = "200", description = "Retorna dto"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @GetMapping("/favoritos/{idJogo}")
     public ResponseEntity<FavoriteDTO> isFavorito(@PathVariable("idJogo")Integer idJogo) throws RegraDeNegocioException;
+
 }

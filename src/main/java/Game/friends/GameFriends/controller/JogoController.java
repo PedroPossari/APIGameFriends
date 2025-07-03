@@ -80,4 +80,9 @@ public class JogoController implements JogoControllerDoc {
     public ResponseEntity<FavoriteDTO> isFavorito(@PathVariable("idJogo")Integer idJogo) throws RegraDeNegocioException {
         return new ResponseEntity<>(jogoService.isFavorito(idJogo), HttpStatus.OK);
     }
+
+    @GetMapping("/review/{idJogo}")
+    public ResponseEntity<ReviewCheckDTO> isReviewed(@PathVariable("idJogo")Integer idJogo) throws RegraDeNegocioException{
+        return new ResponseEntity<>(jogoService.isReviewed(idJogo), HttpStatus.OK);
+    }
 }

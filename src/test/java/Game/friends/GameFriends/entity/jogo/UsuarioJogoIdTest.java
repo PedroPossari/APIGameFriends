@@ -1,4 +1,4 @@
-package Game.friends.GameFriends.entity.Jogo;
+package Game.friends.GameFriends.entity.jogo;
 
 import Game.friends.GameFriends.entity.UsuarioJogo.UsuarioJogoId;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package Game.friends.GameFriends.entity.Jogo;
+package Game.friends.GameFriends.entity.jogo;
 
 import Game.friends.GameFriends.entity.JogoEntity;
 import Game.friends.GameFriends.entity.UsuarioJogo.UsuarioJogoEntity;

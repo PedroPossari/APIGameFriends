@@ -97,23 +97,35 @@ public class JogoService {
         JogoEntity jogoEntity = jogoRepository.findById(reviewCreateDTO.getIdJogo())
                 .orElseThrow(() -> new RegraDeNegocioException("Jogo não encontrado."));
 
-        Optional<UsuarioJogoEntity> OEntity = usuarioJogoRepository.findByUsuarios_IdUsuarioAndJogos_IdJogo(loggedUser.getIdUsuario(), reviewCreateDTO.getIdJogo());
+        Optional<UsuarioJogoEntity> existingReview = usuarioJogoRepository.findByUsuarios_IdUsuarioAndJogos_IdJogo(loggedUser.getIdUsuario(), reviewCreateDTO.getIdJogo());
+        if (existingReview.isPresent())
+            throw new RegraDeNegocioException("Você já avaliou esse jogo");
 
-        if (OEntity.isPresent()) throw new RegraDeNegocioException("Você já avaliou esse jogo");
+        Integer totalAntes = jogoEntity.getTotalRating() == null ? 0 : jogoEntity.getTotalRating();
+        Double avgAntes = jogoEntity.getAvgRating() == null ? 0.0 : jogoEntity.getAvgRating();
 
         UsuarioJogoEntity entity = new UsuarioJogoEntity();
         entity.setJogos(jogoEntity);
         entity.setUsuarios(userEntity);
         entity.setId(new UsuarioJogoId(userEntity.getIdUsuario(), jogoEntity.getIdJogo()));
+
+        if (reviewCreateDTO.getRating() < 0 || reviewCreateDTO.getRating() > 10) {
+            throw new RegraDeNegocioException("A nota deve estar entre 0 e 10.");
+        }
         entity.setRating(reviewCreateDTO.getRating());
 
-        if (jogoEntity.getTotalRating() == null) jogoEntity.setTotalRating(1);
-        else jogoEntity.setTotalRating(jogoEntity.getTotalRating() + 1);
+        Double acumulado = avgAntes * totalAntes;
+        Double novoAcumulado = acumulado + entity.getRating();
 
-        if (jogoEntity.getAvgRating() == null) jogoEntity.setAvgRating(0.0);
-        Double rates = (jogoEntity.getAvgRating() * jogoEntity.getTotalRating());
+        int novoTotal = totalAntes + 1;
+        Double novaMedia = novoAcumulado / novoTotal;
 
-        jogoEntity.setAvgRating((rates + entity.getRating() )/ jogoEntity.getTotalRating());
+        if (novaMedia < 0 || novaMedia > 10) {
+            throw new RegraDeNegocioException("A média calculada está fora do intervalo permitido.");
+        }
+
+        jogoEntity.setTotalRating(novoTotal);
+        jogoEntity.setAvgRating(novaMedia);
 
         usuarioJogoRepository.save(entity);
         jogoRepository.save(jogoEntity);

@@ -19,11 +19,11 @@ public class JogoCreateDTO {
     @NotNull
     private Integer anoLancamento;
 
-    @Schema(description = "Generos do Jogo", example = "Action RPG")
+    @Schema(description = "Generos do Jogo", example = "[\"Action RPG\"]")
     @NotNull
     private String[] genero;
 
-    @Schema(description = "Plataformas do Jogo", example = "Playstation 5")
+    @Schema(description = "Plataformas do Jogo", example = "[\"Playstation 5\"]")
     @NotNull
     private String[] plataformas;
 

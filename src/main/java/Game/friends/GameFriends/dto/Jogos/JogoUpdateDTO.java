@@ -14,7 +14,7 @@ public class JogoUpdateDTO extends JogoCreateDTO{
     @Schema(description = "Média Do Jogo", example = "6.32")
     @NotNull
     private Double avgRating;
-    @Schema(description = "Total de Avaliações Do Jogo", example = "112512")
+    @Schema(description = "Total de Avaliações Do Jogo", example = "2334")
     @NotNull
     private Integer totalRating;
 }

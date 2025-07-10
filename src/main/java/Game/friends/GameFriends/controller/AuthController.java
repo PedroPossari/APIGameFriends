@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -108,5 +109,4 @@ public class AuthController implements AuthControllerDoc
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro no login com Google");
         }
     }
-
 }

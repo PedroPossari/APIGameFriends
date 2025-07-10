@@ -1,9 +1,6 @@
 package Game.friends.GameFriends.service;
 
-import Game.friends.GameFriends.dto.Usuario.UsuarioCreateDTO;
-import Game.friends.GameFriends.dto.Usuario.UsuarioDTO;
-import Game.friends.GameFriends.dto.Usuario.UsuarioSenhaDTO;
-import Game.friends.GameFriends.dto.Usuario.UsuarioUpdateDTO;
+import Game.friends.GameFriends.dto.Usuario.*;
 import Game.friends.GameFriends.entity.CargoEntity;
 import Game.friends.GameFriends.entity.UsuarioEntity;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;
@@ -12,12 +9,16 @@ import Game.friends.GameFriends.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,6 +39,31 @@ public class UsuarioService {
     public UsuarioDTO getLoggedUser() throws RegraDeNegocioException {
         UsuarioEntity usuarioLogado = findByID(getIdLoggedUser());
         return retornarDTO(usuarioLogado);
+    }
+
+    public List<UsuarioSearchDTO> getByName(String search, Integer page, Integer size) {
+        Page<UsuarioEntity> entities;
+        Pageable pageable;
+
+        pageable = PageRequest.of(page,size);
+
+        if (search != null && !search.isBlank()) entities = usuarioRepository.findByLoginContainingIgnoreCase(search, pageable);
+        else entities = usuarioRepository.findAll(pageable);
+
+        List<UsuarioSearchDTO> usuarios = entities.stream().map(entity -> {
+            UsuarioSearchDTO dto = new UsuarioSearchDTO();
+            dto.setIdUsuario(entity.getIdUsuario());
+            dto.setLogin(entity.getLogin());
+
+            return dto;
+        }).toList();
+
+        return usuarios;
+    }
+
+    public UsuarioDTO findById(Integer idUsuario) throws RegraDeNegocioException {
+        UsuarioEntity usuario = findByID(idUsuario);
+        return retornarDTO(usuario);
     }
 
     private Integer getIdLoggedUser() {
@@ -73,7 +99,7 @@ public class UsuarioService {
         entity.setSenha(encoder.encode(usuarioCreateDTO.getSenha()));
         entity.setEmail(usuarioCreateDTO.getEmail());
 
-        CargoEntity cargo = cargoRepository.findByNome(usuarioCreateDTO.getNomeCargo())
+        CargoEntity cargo = cargoRepository.findByNome("ROLE_USUARIO")
                 .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
 
         entity.setCargos(Set.of(cargo));
@@ -83,6 +109,17 @@ public class UsuarioService {
         emailService.sendHtmlEmail(newEmail, "Conta Google cadastrada com sucesso!", html);
 
         usuarioRepository.save(entity);
+        return retornarDTO(entity);
+    }
+
+    public UsuarioDTO turnAdmin(Integer idUsuario) throws RegraDeNegocioException {
+        UsuarioEntity entity = findByID(idUsuario);
+        CargoEntity cargo = cargoRepository.findByNome("ROLE_ADMIN").orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado"));
+
+        entity.getCargos().clear();
+        entity.setCargos(Set.of(cargo));
+        entity = usuarioRepository.save(entity);
+
         return retornarDTO(entity);
     }
 
@@ -143,6 +180,4 @@ public class UsuarioService {
 
         return usuarioRepository.save(usuario);
     }
-
-
 }

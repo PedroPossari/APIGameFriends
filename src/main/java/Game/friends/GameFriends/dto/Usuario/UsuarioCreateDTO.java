@@ -19,8 +19,4 @@ public class UsuarioCreateDTO {
     @Schema(example = "123456", description = "Senha do usuário")
     @NotBlank(message = "Senha é obrigatória")
     private String senha;
-
-    @Schema(example = "ROLE_ADMIN", description = "Cargo do usuário (ex: ROLE_ADMIN ou ROLE_USUARIO)")
-    @NotBlank(message = "Nome do cargo é obrigatório")
-    private String nomeCargo;
 }

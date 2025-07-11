@@ -44,7 +44,6 @@ public class UsuarioService {
     private final CargoRepository cargoRepository;
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
-    private final UsuarioJogoRepository usuarioJogoRepository;
 
     public Optional<UsuarioEntity> findbyLogin(String login) {
         return usuarioRepository.findByLogin(login);
@@ -207,6 +206,8 @@ public class UsuarioService {
                 .map(UsuarioJogoEntity::getJogos)
                 .map(jogo -> objectMapper.convertValue(jogo, JogoDTO.class))
                 .collect(Collectors.toList());
+
+    }
 
     public Page<UsuarioComAvaliacaoDTO> listarUsuariosComAvaliacaoPorCargo(String nomeCargo, Pageable pageable) {
         Page<UsuarioEntity> usuarios = usuarioRepository.findByCargo(nomeCargo, pageable);

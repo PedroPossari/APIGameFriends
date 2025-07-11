@@ -17,6 +17,8 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
     Optional<UsuarioEntity> findByLogin(String login);
     Optional<UsuarioEntity> findByEmail(String email);
 
+    Page<UsuarioEntity> findByLoginContainingIgnoreCase(String search, Pageable pageable);
+  
     @Query("SELECT u FROM Usuario u JOIN u.cargos c WHERE LOWER(c.nome) = LOWER(:nomeCargo)")
     Page<UsuarioEntity> findAllByCargoNome(@Param("nomeCargo") String nomeCargo, Pageable pageable);
 

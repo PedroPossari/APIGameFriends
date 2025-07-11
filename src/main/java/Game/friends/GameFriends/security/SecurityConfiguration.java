@@ -33,6 +33,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authz) -> authz
 
                         .antMatchers("/", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .antMatchers("/usuario/admin/**").hasRole("ADMIN")
+                        .antMatchers("/usuario/**").permitAll()
                         .antMatchers("/auth/**").permitAll()
                         .antMatchers(HttpMethod.GET,"/jogos/**").hasAnyRole("ADMIN", "USUARIO")
                         .antMatchers(HttpMethod.PUT, "/jogos/favoritos").hasAnyRole("ADMIN", "USUARIO")

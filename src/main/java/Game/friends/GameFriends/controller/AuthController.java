@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -122,5 +123,4 @@ public class AuthController implements AuthControllerDoc
         Page<UsuarioComAvaliacaoDTO> usuarios = usuarioService.listarUsuariosComAvaliacaoPorCargo("ROLE_USUARIO", pageable);
         return ResponseEntity.ok(usuarios);
     }
-
 }

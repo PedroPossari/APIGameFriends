@@ -3,7 +3,6 @@ package Game.friends.GameFriends.controller;
 
 import Game.friends.GameFriends.controller.doc.AuthControllerDoc;
 import Game.friends.GameFriends.dto.Google.GoogleLoginDTO;
-import Game.friends.GameFriends.dto.Jogos.UsuarioComAvaliacaoDTO;
 import Game.friends.GameFriends.dto.Usuario.*;
 import Game.friends.GameFriends.entity.UsuarioEntity;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;
@@ -13,9 +12,6 @@ import Game.friends.GameFriends.service.UsuarioService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -112,15 +107,5 @@ public class AuthController implements AuthControllerDoc
             logger.error("Erro no login com Google", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro no login com Google");
         }
-    }
-
-    @GetMapping("/usuarios/role-usuario")
-    public ResponseEntity<Page<UsuarioComAvaliacaoDTO>> listarUsuariosComRoleUsuario(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<UsuarioComAvaliacaoDTO> usuarios = usuarioService.listarUsuariosComAvaliacaoPorCargo("ROLE_USUARIO", pageable);
-        return ResponseEntity.ok(usuarios);
     }
 }

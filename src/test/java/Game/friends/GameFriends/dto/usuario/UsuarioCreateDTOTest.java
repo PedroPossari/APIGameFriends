@@ -25,7 +25,7 @@ class UsuarioCreateDTOTest {
         dto.setLogin("pedro123");
         dto.setEmail("pedro@email.com");
         dto.setSenha("123456");
-        dto.setNomeCargo("ROLE_ADMIN");
+
 
         Set<ConstraintViolation<UsuarioCreateDTO>> violations = validator.validate(dto);
         assertTrue(violations.isEmpty());
@@ -37,7 +37,7 @@ class UsuarioCreateDTOTest {
         dto.setLogin("");
         dto.setEmail("pedro@email.com");
         dto.setSenha("123456");
-        dto.setNomeCargo("ROLE_ADMIN");
+
 
         Set<ConstraintViolation<UsuarioCreateDTO>> violations = validator.validate(dto);
         assertFalse(violations.isEmpty());
@@ -53,7 +53,7 @@ class UsuarioCreateDTOTest {
         dto.setLogin("pedro123");
         dto.setEmail("");
         dto.setSenha("123456");
-        dto.setNomeCargo("ROLE_ADMIN");
+
 
         Set<ConstraintViolation<UsuarioCreateDTO>> violations = validator.validate(dto);
         assertFalse(violations.isEmpty());
@@ -69,7 +69,7 @@ class UsuarioCreateDTOTest {
         dto.setLogin("pedro123");
         dto.setEmail("pedro@email.com");
         dto.setSenha("");
-        dto.setNomeCargo("ROLE_ADMIN");
+
 
         Set<ConstraintViolation<UsuarioCreateDTO>> violations = validator.validate(dto);
         assertFalse(violations.isEmpty());
@@ -85,7 +85,7 @@ class UsuarioCreateDTOTest {
         dto.setLogin("pedro123");
         dto.setEmail("pedro@email.com");
         dto.setSenha("123456");
-        dto.setNomeCargo("");
+
 
         Set<ConstraintViolation<UsuarioCreateDTO>> violations = validator.validate(dto);
         assertFalse(violations.isEmpty());
@@ -101,7 +101,7 @@ class UsuarioCreateDTOTest {
         dto.setLogin("");
         dto.setEmail("");
         dto.setSenha("");
-        dto.setNomeCargo("");
+
 
         Set<ConstraintViolation<UsuarioCreateDTO>> violations = validator.validate(dto);
         assertEquals(4, violations.size());

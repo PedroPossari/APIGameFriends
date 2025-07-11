@@ -1,5 +1,6 @@
 package Game.friends.GameFriends.controller.doc;
 
+import Game.friends.GameFriends.dto.Jogos.JogoDTO;
 import Game.friends.GameFriends.dto.Usuario.UsuarioDTO;
 import Game.friends.GameFriends.dto.Usuario.UsuarioSearchDTO;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;
@@ -53,4 +54,15 @@ public interface UsuarioControllerDoc {
     )
     @GetMapping("/search/{id}")
     public ResponseEntity<UsuarioDTO> findById(@PathVariable("id") Integer id) throws RegraDeNegocioException;
+
+    @Operation(summary = "Retorna jogos favoritos de usuário", description = "Usado para procurar jogos favoritos de usuário pelo ID")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna lista de jogos"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/favoritos/{id}")
+    public ResponseEntity<List<JogoDTO>> findFavorites(@PathVariable("id") Integer id) throws RegraDeNegocioException;
 }

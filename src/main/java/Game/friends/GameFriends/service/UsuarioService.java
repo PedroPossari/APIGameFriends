@@ -1,5 +1,6 @@
 package Game.friends.GameFriends.service;
 
+import Game.friends.GameFriends.dto.Jogos.JogoDTO;
 import Game.friends.GameFriends.dto.Usuario.*;
 import Game.friends.GameFriends.dto.Jogos.UsuarioComAvaliacaoDTO;
 import Game.friends.GameFriends.dto.Usuario.UsuarioCreateDTO;
@@ -8,6 +9,7 @@ import Game.friends.GameFriends.dto.Usuario.UsuarioSenhaDTO;
 import Game.friends.GameFriends.dto.Usuario.UsuarioUpdateDTO;
 import Game.friends.GameFriends.entity.CargoEntity;
 import Game.friends.GameFriends.entity.UsuarioEntity;
+import Game.friends.GameFriends.entity.UsuarioJogo.UsuarioJogoEntity;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;
 import Game.friends.GameFriends.repository.CargoRepository;
 import Game.friends.GameFriends.repository.UsuarioJogoRepository;
@@ -38,6 +40,7 @@ import java.util.stream.Collectors;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioJogoRepository usuarioJogoRepository;
     private final CargoRepository cargoRepository;
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
@@ -191,6 +194,19 @@ public class UsuarioService {
 
         return usuarioRepository.save(usuario);
     }
+
+    public List<JogoDTO> findFavoritos(Integer id) throws RegraDeNegocioException {
+        UsuarioDTO user = findById(id);
+
+        List<UsuarioJogoEntity> entities = usuarioJogoRepository.findByUsuarios_IdUsuario(user.getIdUsuario());
+
+        if (entities.isEmpty()) throw new RegraDeNegocioException("Usuário não possui jogos favoritos.");
+
+        return entities.stream()
+                .filter(entity -> entity.getFavorito() != null && entity.getFavorito())
+                .map(UsuarioJogoEntity::getJogos)
+                .map(jogo -> objectMapper.convertValue(jogo, JogoDTO.class))
+                .collect(Collectors.toList());
 
     public Page<UsuarioComAvaliacaoDTO> listarUsuariosComAvaliacaoPorCargo(String nomeCargo, Pageable pageable) {
         Page<UsuarioEntity> usuarios = usuarioRepository.findByCargo(nomeCargo, pageable);

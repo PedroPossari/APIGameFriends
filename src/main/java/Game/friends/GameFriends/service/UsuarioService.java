@@ -195,7 +195,6 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-<<<<<<< HEAD
     public List<JogoDTO> findFavoritos(Integer id) throws RegraDeNegocioException {
         UsuarioDTO user = findById(id);
 
@@ -208,7 +207,7 @@ public class UsuarioService {
                 .map(UsuarioJogoEntity::getJogos)
                 .map(jogo -> objectMapper.convertValue(jogo, JogoDTO.class))
                 .collect(Collectors.toList());
-=======
+
     public Page<UsuarioComAvaliacaoDTO> listarUsuariosComAvaliacaoPorCargo(String nomeCargo, Pageable pageable) {
         Page<UsuarioEntity> usuarios = usuarioRepository.findByCargo(nomeCargo, pageable);
 
@@ -233,6 +232,5 @@ public class UsuarioService {
                     return new PageImpl<>(pageContent, pageable, list.size());
                 }));
 
->>>>>>> df30d589deeaea67c7aaeae7a888e8976756e5ad
     }
 }

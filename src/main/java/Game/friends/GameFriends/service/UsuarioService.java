@@ -1,16 +1,23 @@
 package Game.friends.GameFriends.service;
 
 import Game.friends.GameFriends.dto.Usuario.*;
+import Game.friends.GameFriends.dto.Jogos.UsuarioComAvaliacaoDTO;
+import Game.friends.GameFriends.dto.Usuario.UsuarioCreateDTO;
+import Game.friends.GameFriends.dto.Usuario.UsuarioDTO;
+import Game.friends.GameFriends.dto.Usuario.UsuarioSenhaDTO;
+import Game.friends.GameFriends.dto.Usuario.UsuarioUpdateDTO;
 import Game.friends.GameFriends.entity.CargoEntity;
 import Game.friends.GameFriends.entity.UsuarioEntity;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;
 import Game.friends.GameFriends.repository.CargoRepository;
+import Game.friends.GameFriends.repository.UsuarioJogoRepository;
 import Game.friends.GameFriends.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +25,9 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,6 +41,7 @@ public class UsuarioService {
     private final CargoRepository cargoRepository;
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
+    private final UsuarioJogoRepository usuarioJogoRepository;
 
     public Optional<UsuarioEntity> findbyLogin(String login) {
         return usuarioRepository.findByLogin(login);
@@ -179,5 +190,31 @@ public class UsuarioService {
         emailService.sendHtmlEmail(newEmail, "Conta Google cadastrada com sucesso!", html);
 
         return usuarioRepository.save(usuario);
+    }
+
+    public Page<UsuarioComAvaliacaoDTO> listarUsuariosComAvaliacaoPorCargo(String nomeCargo, Pageable pageable) {
+        Page<UsuarioEntity> usuarios = usuarioRepository.findByCargo(nomeCargo, pageable);
+
+        return usuarios.map(usuario -> {
+                    Double media = usuarioJogoRepository.calcularMediaRatingPorUsuario(usuario.getIdUsuario());
+                    Long quantidade = usuarioJogoRepository.contarAvaliacoesPorUsuario(usuario.getIdUsuario());
+
+                    UsuarioComAvaliacaoDTO dto = new UsuarioComAvaliacaoDTO();
+                    dto.setIdUsuario(usuario.getIdUsuario());
+                    dto.setLogin(usuario.getLogin());
+                    dto.setEmail(usuario.getEmail());
+                    dto.setRoles(usuario.getCargos().stream().map(c -> c.getNome()).collect(Collectors.toSet()));
+                    dto.setMediaAvaliacoes(media != null ? media : 0.0);
+                    dto.setQuantidadeAvaliacoes(quantidade != null ? quantidade : 0L);
+                    return dto;
+                }).stream()
+                .sorted(Comparator.comparing(UsuarioComAvaliacaoDTO::getQuantidadeAvaliacoes).reversed())
+                .collect(Collectors.collectingAndThen(Collectors.toList(), list -> {
+                    int start = (int) pageable.getOffset();
+                    int end = Math.min((start + pageable.getPageSize()), list.size());
+                    List<UsuarioComAvaliacaoDTO> pageContent = list.subList(start, end);
+                    return new PageImpl<>(pageContent, pageable, list.size());
+                }));
+
     }
 }

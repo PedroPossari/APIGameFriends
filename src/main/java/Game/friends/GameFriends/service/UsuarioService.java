@@ -1,10 +1,13 @@
 package Game.friends.GameFriends.service;
 
+import Game.friends.GameFriends.dto.Jogos.JogoDTO;
 import Game.friends.GameFriends.dto.Usuario.*;
 import Game.friends.GameFriends.entity.CargoEntity;
 import Game.friends.GameFriends.entity.UsuarioEntity;
+import Game.friends.GameFriends.entity.UsuarioJogo.UsuarioJogoEntity;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;
 import Game.friends.GameFriends.repository.CargoRepository;
+import Game.friends.GameFriends.repository.UsuarioJogoRepository;
 import Game.friends.GameFriends.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioJogoRepository usuarioJogoRepository;
     private final CargoRepository cargoRepository;
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
@@ -179,5 +183,19 @@ public class UsuarioService {
         emailService.sendHtmlEmail(newEmail, "Conta Google cadastrada com sucesso!", html);
 
         return usuarioRepository.save(usuario);
+    }
+
+    public List<JogoDTO> findFavoritos(Integer id) throws RegraDeNegocioException {
+        UsuarioDTO user = findById(id);
+
+        List<UsuarioJogoEntity> entities = usuarioJogoRepository.findByUsuarios_IdUsuario(user.getIdUsuario());
+
+        if (entities.isEmpty()) throw new RegraDeNegocioException("Usuário não possui jogos favoritos.");
+
+        return entities.stream()
+                .filter(entity -> entity.getFavorito() != null && entity.getFavorito())
+                .map(UsuarioJogoEntity::getJogos)
+                .map(jogo -> objectMapper.convertValue(jogo, JogoDTO.class))
+                .collect(Collectors.toList());
     }
 }

@@ -1,9 +1,11 @@
 package Game.friends.GameFriends.controller;
 
 import Game.friends.GameFriends.controller.doc.UsuarioControllerDoc;
+import Game.friends.GameFriends.dto.Jogos.JogoDTO;
 import Game.friends.GameFriends.dto.Usuario.UsuarioDTO;
 import Game.friends.GameFriends.dto.Usuario.UsuarioSearchDTO;
 import Game.friends.GameFriends.exception.RegraDeNegocioException;
+import Game.friends.GameFriends.service.JogoService;
 import Game.friends.GameFriends.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsuarioController implements UsuarioControllerDoc {
     private final UsuarioService usuarioService;
+    private final JogoService jogoService;
 
     @PutMapping("/admin/{id}")
     public ResponseEntity<UsuarioDTO> turnAdmin(@PathVariable("id")Integer id) throws RegraDeNegocioException {
@@ -37,5 +40,10 @@ public class UsuarioController implements UsuarioControllerDoc {
     @GetMapping("/search/{id}")
     public ResponseEntity<UsuarioDTO> findById(@PathVariable("id") Integer id) throws RegraDeNegocioException {
         return new ResponseEntity<>(usuarioService.findById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/favoritos/{id}")
+    public ResponseEntity<List<JogoDTO>> findFavorites(@PathVariable("id") Integer id) throws RegraDeNegocioException {
+        return new ResponseEntity<>(usuarioService.findFavoritos(id), HttpStatus.OK);
     }
 }
